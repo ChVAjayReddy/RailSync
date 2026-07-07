@@ -1,119 +1,243 @@
-export type Track = {
+export type Section = {
+  id: number;
+  length: number;
+  occupied: boolean;
+  occupiedBy?: number;
+  signalId?: number;
+  signalColor: "red" | "yellow" | "green";
+  signalType: "section" | "home" | "outer" | "up" | "down" | "main";
+  stationId: number;
+};
+export type StationYard = {
   id: number;
   name: string;
+  numberOfTrainsOccupied: number;
+  homeSignalSection: Section;
+  outerSignalSection: Section;
+  upLineSections: Section;
+  downLineSections: Section;
+  mainLineSections: Section;
 };
 
 export type Station = {
   id: number;
   name: string;
+  stationYard: StationYard;
+  noofSectionsBeforeYard: number;
+  noofSectionsAfterYard: number;
+  SectionsBeforeYard: Section[];
+  SectionsAfterYard: Section[];
 };
 
-export type Signal = {
-  id: number;
-  trackId: number;
-  position: "start" | "end";
-  color: "red" | "yellow" | "green";
-};
-
-export type Train = {
-  id: number;
-  name: string;
-  trackId: number;
-  position: number;
-};
-export const stations: Station[] = [
+export const trackLine: Station[] = [
+  {
+    id: 0,
+    name: "A",
+    SectionsBeforeYard: [
+      {
+        id: 1,
+        length: 14,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 1,
+        signalType: "section",
+        signalColor: "green",
+        stationId: 1,
+      },
+      {
+        id: 2,
+        length: 14,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 1,
+        signalType: "section",
+        signalColor: "green",
+        stationId: 1,
+      },
+    ],
+    SectionsAfterYard: [
+      {
+        id: 3,
+        length: 14,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 1,
+        signalType: "section",
+        signalColor: "green",
+        stationId: 1,
+      },
+      {
+        id: 4,
+        length: 14,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 1,
+        signalType: "section",
+        signalColor: "green",
+        stationId: 1,
+      },
+    ],
+    noofSectionsAfterYard: 2,
+    noofSectionsBeforeYard: 2,
+    stationYard: {
+      id: 1,
+      name: "A",
+      numberOfTrainsOccupied: 0,
+      homeSignalSection: {
+        id: 3,
+        length: 2,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 2,
+        signalType: "home",
+        signalColor: "green",
+        stationId: 1,
+      },
+      outerSignalSection: {
+        id: 3,
+        length: 2,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 2,
+        signalType: "outer",
+        signalColor: "red",
+        stationId: 1,
+      },
+      mainLineSections: {
+        id: 3,
+        length: 10,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 2,
+        signalType: "main",
+        signalColor: "red",
+        stationId: 1,
+      },
+      upLineSections: {
+        id: 3,
+        length: 10,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 2,
+        signalType: "up",
+        signalColor: "red",
+        stationId: 1,
+      },
+      downLineSections: {
+        id: 3,
+        length: 10,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 2,
+        signalType: "down",
+        signalColor: "red",
+        stationId: 1,
+      },
+    },
+  },
   {
     id: 1,
-    name: "Station A",
+    name: "A",
+    SectionsBeforeYard: [
+      {
+        id: 1,
+        length: 14,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 1,
+        signalType: "section",
+        signalColor: "green",
+        stationId: 1,
+      },
+      {
+        id: 2,
+        length: 14,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 1,
+        signalType: "section",
+        signalColor: "green",
+        stationId: 1,
+      },
+    ],
+    SectionsAfterYard: [
+      {
+        id: 5,
+        length: 14,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 1,
+        signalType: "section",
+        signalColor: "green",
+        stationId: 1,
+      },
+      {
+        id: 6,
+        length: 14,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 1,
+        signalType: "section",
+        signalColor: "green",
+        stationId: 1,
+      },
+    ],
+    noofSectionsAfterYard: 2,
+    noofSectionsBeforeYard: 2,
+    stationYard: {
+      id: 1,
+      name: "A",
+      numberOfTrainsOccupied: 0,
+      homeSignalSection: {
+        id: 3,
+        length: 2,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 2,
+        signalType: "home",
+        signalColor: "green",
+        stationId: 1,
+      },
+      outerSignalSection: {
+        id: 3,
+        length: 2,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 2,
+        signalType: "outer",
+        signalColor: "red",
+        stationId: 1,
+      },
+      mainLineSections: {
+        id: 3,
+        length: 10,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 2,
+        signalType: "main",
+        signalColor: "red",
+        stationId: 1,
+      },
+      upLineSections: {
+        id: 3,
+        length: 10,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 2,
+        signalType: "up",
+        signalColor: "red",
+        stationId: 1,
+      },
+      downLineSections: {
+        id: 3,
+        length: 10,
+        occupied: false,
+        occupiedBy: -1,
+        signalId: 2,
+        signalType: "down",
+        signalColor: "red",
+        stationId: 1,
+      },
+    },
   },
-  {
-    id: 2,
-    name: "Station B",
-  },
-];
-
-export const tracks: Track[] = [
-  {
-    id: 1,
-    name: "Track 1",
-  },
-  {
-    id: 2,
-    name: "Track 2",
-  },
-  {
-    id: 3,
-    name: "Track 3",
-  },
-];
-export const signals: Signal[] = [
-  {
-    id: 1,
-    trackId: 1,
-    position: "start",
-    color: "green",
-  },
-  {
-    id: 2,
-    trackId: 1,
-    position: "end",
-    color: "red",
-  },
-  {
-    id: 3,
-    trackId: 2,
-    position: "start",
-    color: "green",
-  },
-  {
-    id: 4,
-    trackId: 2,
-    position: "end",
-    color: "green",
-  },
-  {
-    id: 5,
-    trackId: 3,
-    position: "start",
-    color: "yellow",
-  },
-  {
-    id: 6,
-    trackId: 3,
-    position: "end",
-    color: "red",
-  },
-];
-export const trains: Train[] = [
-  {
-    id: 1,
-    name: "Express 101",
-    trackId: 1,
-    position: 30,
-  },
-  {
-    id: 2,
-    name: "Passenger 202",
-    trackId: 2,
-    position: 65,
-  },
-];
-export const trackLength = 14;
-export const signalPositions = {
-  start: 0,
-  end: trackLength,
-};
-export const railwayLine = [
-  { type: "track", data: { id: 1, name: "Track 1" } },
-  { type: "track", data: { id: 2, name: "Track 2" } },
-  { type: "track", data: { id: 3, name: "Track 3" } },
-  { type: "station", data: { id: 1, name: "Station A" } },
-  { type: "track", data: { id: 1, name: "Track 4" } },
-  { type: "track", data: { id: 2, name: "Track 5" } },
-  { type: "track", data: { id: 3, name: "Track 6" } },
-  { type: "station", data: { id: 1, name: "Station B" } },
-  { type: "track", data: { id: 1, name: "Track 7" } },
-  { type: "track", data: { id: 2, name: "Track 8" } },
-  { type: "track", data: { id: 3, name: "Track 9" } },
-  { type: "station", data: { id: 1, name: "Station C" } },
 ];
