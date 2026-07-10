@@ -124,6 +124,7 @@
 import Simulator from "./pages/Simulator/Simulator";
 import Navbar from "./components/Layout/Navbar";
 import Sidebar from "./components/Layout/Sidebar";
+import ControlPanel from "./components/ControlPanel";
 
 function App() {
   return (
@@ -137,6 +138,7 @@ function App() {
             <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm overflow-auto">
               <Simulator />
             </div>
+            <ControlPanel />
           </div>
         </main>
       </div>

@@ -1,90 +1,41 @@
 import { LuTrainTrack } from "react-icons/lu";
-import SignalDot from "../SignalDot";
 import { PiTrafficSignalFill } from "react-icons/pi";
+import { IoTrain } from "react-icons/io5";
 
-const DownLine = () => {
-  const positions: (boolean | number | string)[][] = [
-    [
-      false,
-      false,
-      90,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      180,
-      false,
-      false,
-    ],
-    [
-      false,
-      false,
-      false,
-      90,
-      false,
-      false,
-      false,
-      false,
-      false,
-      "signal",
-      180,
-      false,
-      false,
-      false,
-    ],
-    [
-      false,
-      false,
-      false,
-      false,
-      45,
-      45,
-      45,
-      45,
-      45,
-      45,
-      false,
-      false,
-      false,
-      false,
-    ],
-  ];
+type SectionProps = {
+  length: number;
+  entrySignalColor: "red" | "yellow" | "green";
+  exitSignalColor: "red" | "yellow" | "green";
+  type: "home" | "outer" | "up" | "down" | "main" | "section";
+  occupiedBy?: number;
+};
 
+const DownLine = ({
+  length,
+  entrySignalColor,
+  exitSignalColor,
+  type,
+  occupiedBy,
+}: SectionProps) => {
+  const section = [];
+  for (let i = 0; i < length; i++) {
+    if (occupiedBy !== undefined && occupiedBy === i) {
+      section.push(<IoTrain key={i} style={{ rotate: "45deg" }} />);
+    } else {
+      section.push(<LuTrainTrack key={i} style={{ rotate: "45deg" }} />);
+    }
+  }
   return (
-    <>
-      <div className="flex flex-col">
-        <div className="flex flex-col">
-          {positions.map((row, rowIndex) => (
-            <div key={rowIndex} className="flex flex-row ">
-              {row.map((position, index) => (
-                <div
-                  key={index}
-                  className="flex justify-center items-center w-4 h-4"
-                >
-                  {position === "signal" ? (
-                    <PiTrafficSignalFill fill="green" />
-                  ) : (
-                    <LuTrainTrack
-                      style={{
-                        visibility: position === false ? "hidden" : "visible",
-                        transform:
-                          typeof position === "number" && position !== 0
-                            ? `rotate(${position}deg)`
-                            : undefined,
-                      }}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
+    <div className="flex flex-col">
+      <div className="flex flex-row justify-between">
+        <PiTrafficSignalFill fill={entrySignalColor} />
+        <span className="text-xs font-medium text-gray-700 bg-gray-200 px-2 py-1 rounded">
+          {type}
+        </span>
+        <PiTrafficSignalFill fill={exitSignalColor} />
       </div>
-    </>
+      <div className="flex flex-row">{section}</div>
+    </div>
   );
 };
 
