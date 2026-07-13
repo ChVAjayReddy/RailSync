@@ -38,4 +38,10 @@ export type TrackLineState = {
   runningSections: number[];
   blockedSections: number[];
   cautionSections: number[];
+  handleStationSignals: (
+    track: StationYard,
+    index: number,
+    type: string | number,
+    signal?: string,
+  ) => void;
 };

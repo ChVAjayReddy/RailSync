@@ -10,34 +10,39 @@ const Simulator = () => {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      const removed: number[] = [];
+      const removedTrains: number[] = [];
       const state = useTrackLineStore.getState();
       const updateTrainsState: Train[] = state.trains.map((train) => {
         if (train.presentSection === "section") {
           if (train.position === 13) {
             const nextTrack = state.trackLine[train.nextSectionId];
+
+            if (!nextTrack) {
+              removedTrains.push(train.id);
+
+              return train;
+            }
+
             if (nextTrack.type === "section") {
               return nextTrack.occupied
                 ? { ...train }
-                : (removed.push(train.currentSectionId),
-                  {
+                : {
                     ...train,
                     currentSectionId: train.currentSectionId + 1,
                     nextSectionId: train.nextSectionId + 1,
                     position: 0,
-                  });
+                  };
             }
             if (nextTrack.type === "station") {
               return nextTrack.homeSection.occupied
                 ? { ...train }
-                : (removed.push(train.currentSectionId),
-                  {
+                : {
                     ...train,
                     position: 0,
                     currentSectionId: train.currentSectionId + 1,
                     nextSectionId: train.nextSectionId + 1,
                     presentSection: "home",
-                  });
+                  };
             }
             return { ...train };
           } else {
@@ -53,6 +58,7 @@ const Simulator = () => {
                 const nextloopsection = nextloop.tracks.findIndex(
                   (user) => user.entry === true,
                 );
+
                 return {
                   ...train,
                   position: 0,
@@ -78,135 +84,134 @@ const Simulator = () => {
             }
           }
           if (train.presentSection === "outer") {
-            if (train.position === 1) {
-              const nextloop = state.trackLine[train.currentSectionId];
-              if (nextloop.type === "station") {
-                return nextloop.outerSection.occupied
-                  ? { ...train }
-                  : { ...train, position: train.position + 1 };
-              }
-              return { ...train };
-            } else if (train.position === 3) {
-              const nextTrack = state.trackLine[train.nextSectionId];
-              if (nextTrack.type === "section") {
-                return nextTrack.occupied
-                  ? { ...train }
-                  : (removed.push(train.currentSectionId),
-                    {
-                      ...train,
-                      currentSectionId: train.currentSectionId + 1,
-                      nextSectionId: train.nextSectionId + 1,
-                      position: 0,
-                      presentSection: "section",
-                    });
-              }
-            } else {
+            if (train.position !== 3) {
               return { ...train, position: train.position + 1 };
+            } else {
+              const nextloop = state.trackLine[train.nextSectionId];
+              if (nextloop.type === "section") {
+                if (nextloop.occupied === true) {
+                  return { ...train };
+                } else {
+                  return {
+                    ...train,
+                    position: 0,
+                    currentSectionId: train.currentSectionId + 1,
+                    nextSectionId: train.nextSectionId + 1,
+                    presentSection: "section",
+                  };
+                }
+              }
             }
           }
 
           return train;
         }
       });
+      const afterRemovedTrain: Train[] = updateTrainsState.filter(
+        (train) => !removedTrains.includes(train.id),
+      );
 
       const UpdateTrackLIne: (StationYard | SectionType)[] =
         state.trackLine.map((track, index) => {
-          const updatedTrackState = updateTrainsState.filter(
-            (train) => train !== undefined && train.currentSectionId === index,
+          const updatedValues: Train[] = afterRemovedTrain.filter(
+            (train) => train.currentSectionId === index,
           );
-
-          if (updatedTrackState.length > 0 && updatedTrackState[0]) {
+          if (updatedValues.length > 0) {
             if (track.type === "section") {
-              return {
-                ...track,
-                trainId: updatedTrackState[0].id,
-                occupiedBy: updatedTrackState[0].position,
-                occupied: true,
-              };
-            } else if (track.type === "station") {
-              if (updatedTrackState[0].presentSection === "home") {
+              const activeTrain = updatedValues[0];
+              if (activeTrain) {
                 return {
                   ...track,
-                  homeSection: {
-                    ...track.homeSection,
-                    trainId: updatedTrackState[0].id,
-                    occupiedBy: updatedTrackState[0].position,
-                    occupied: true,
-                  },
+                  trainId: activeTrain.id,
+                  occupiedBy: activeTrain.position,
+                  occupied: true,
                 };
-              } else if (
-                updatedTrackState[0].presentSection === "loop" &&
-                updatedTrackState[0].track !== undefined
-              ) {
-                return {
-                  ...track,
-                  tracks: track.tracks.map((t, i) =>
-                    i === updatedTrackState[0].track
-                      ? {
-                          ...t,
-                          trainId: updatedTrackState[0].id,
-                          occupiedBy: updatedTrackState[0].position,
-                          occupied: true,
-                        }
-                      : t,
-                  ),
-                };
-              } else if (updatedTrackState[0].presentSection === "outer") {
-                return {
-                  ...track,
-                  outerSection: {
-                    ...track.outerSection,
-                    trainId: updatedTrackState[0].id,
-                    occupiedBy: updatedTrackState[0].position,
-                    occupied: true,
-                  },
-                };
-              }
-            }
-          } else {
-            if (removed.includes(index)) {
-              if (track.type === "section") {
+              } else {
                 return {
                   ...track,
                   trainId: null,
-                  occupied: false,
                   occupiedBy: -1,
-                };
-              } else if (track.type === "station") {
-                return {
-                  ...track,
-                  homeSection: {
-                    ...track.homeSection,
-                    trainId: null,
-                    occupied: false,
-                    occupiedBy: -1,
-                  },
-                  outerSection: {
-                    ...track.outerSection,
-                    trainId: null,
-                    occupied: false,
-                    occupiedBy: -1,
-                  },
-                  tracks: track.tracks.map((t) => ({
-                    ...t,
-                    trainId: null,
-                    occupied: false,
-                    occupiedBy: -1,
-                  })),
+                  occupied: false,
                 };
               }
-            } else {
-              return { ...track };
+            }
+            if (track.type === "station") {
+              const homeTrain = updatedValues.find(
+                (train) => train.presentSection === "home",
+              );
+              const outerTrain = updatedValues.find(
+                (train) => train.presentSection === "outer",
+              );
+              const loopTrains = updatedValues.filter(
+                (train) => train.presentSection === "loop",
+              );
+
+              return {
+                ...track,
+                homeSection: homeTrain
+                  ? {
+                      ...track.homeSection,
+                      occupiedBy: homeTrain.position,
+                      occupied: true,
+                    }
+                  : {
+                      ...track.homeSection,
+                      occupiedBy: -1,
+                      occupied: false,
+                    },
+                outerSection: outerTrain
+                  ? {
+                      ...track.outerSection,
+                      occupiedBy: outerTrain.position,
+                      occupied: true,
+                    }
+                  : {
+                      ...track.outerSection,
+                      occupiedBy: -1,
+                      occupied: false,
+                    },
+                tracks: track.tracks.map((loopTrack, index) => {
+                  const matchingTrain = loopTrains.find(
+                    (train) => train.track === index,
+                  );
+                  return matchingTrain
+                    ? {
+                        ...loopTrack,
+                        occupiedBy: matchingTrain.position,
+                        occupied: true,
+                      }
+                    : {
+                        ...loopTrack,
+                        occupiedBy: -1,
+                        occupied: false,
+                      };
+                }),
+              };
+            }
+          } else {
+            if (track.type === "section") {
+              return {
+                ...track,
+                trainId: null,
+                occupiedBy: -1,
+                occupied: false,
+              };
+            }
+            if (track.type === "station") {
+              return {
+                ...track,
+              };
             }
           }
+
           return track;
         });
 
       useTrackLineStore.setState({
         trackLine: UpdateTrackLIne,
-        trains: updateTrainsState,
+        trains: afterRemovedTrain,
       });
-    }, 500);
+    }, 100);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -240,21 +245,21 @@ const Simulator = () => {
                 <div className="flex flex-col items-center gap-2">
                   <Section
                     length={track.tracks[0].length}
-                    signalColor={track.tracks[0].occupied ? "red" : "green"}
+                    signalColor={track.tracks[0].exit ? "green" : "red"}
                     occupiedBy={track.tracks[0].occupiedBy}
                   />
                 </div>
                 <div className="flex flex-col items-center gap-2">
                   <Section
                     length={track.tracks[1].length}
-                    signalColor={track.tracks[1].occupied ? "red" : "green"}
+                    signalColor={track.tracks[1].exit ? "green" : "red"}
                     occupiedBy={track.tracks[1].occupiedBy}
                   />
                 </div>{" "}
                 <div className="flex flex-col items-center gap-2">
                   <Section
                     length={track.tracks[2].length}
-                    signalColor={track.tracks[2].occupied ? "red" : "green"}
+                    signalColor={track.tracks[2].exit ? "green" : "red"}
                     occupiedBy={track.tracks[2].occupiedBy}
                   />
                 </div>
