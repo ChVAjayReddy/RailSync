@@ -35,15 +35,22 @@ const Simulator = () => {
                   };
             }
             if (nextTrack.type === "station") {
-              return nextTrack.homeSection.occupied
-                ? { ...train }
-                : {
-                    ...train,
-                    position: 0,
-                    currentSectionId: train.currentSectionId + 1,
-                    nextSectionId: train.nextSectionId + 1,
-                    presentSection: "home",
-                  };
+              const nextSection = state.trackLine[train.nextSectionId];
+              if (nextSection.type === "station") {
+                const nextloopsection = nextSection.tracks.findIndex(
+                  (user) => user.entry.occupied === false,
+                );
+                return nextloopsection != -1
+                  ? {
+                      ...train,
+                      position: 0,
+                      currentSectionId: train.currentSectionId + 1,
+                      nextSectionId: train.nextSectionId + 1,
+                      presentSection: "home",
+                      track: nextloopsection,
+                    }
+                  : { ...train };
+              }
             }
             return { ...train };
           } else {
@@ -245,7 +252,7 @@ const Simulator = () => {
         trackLine: UpdateTrackLIne,
         trains: afterRemovedTrain,
       });
-    }, 500);
+    }, 1000);
 
     return () => clearInterval(intervalId);
   }, []);

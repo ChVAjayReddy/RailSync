@@ -208,10 +208,15 @@ const useTrackLineStore = create<TrackLineState>((set) => ({
   runningSections: [],
   blockedSections: [],
   cautionSections: [],
+  alertMessage: "",
+  setAlertMessage: (message: string) => set({ alertMessage: message }),
   startTrain: () => {
     const temp = useTrackLineStore.getState().trackLine[0];
     if (temp.type === "section" && temp.occupied) {
-      console.log("train already running can't allow");
+      set({
+        alertMessage:
+          "Train is already running in section can't allow another train to pass",
+      });
     } else {
       const newTrain: Train = {
         id: Date.now(),
@@ -256,6 +261,25 @@ const useTrackLineStore = create<TrackLineState>((set) => ({
       } else {
         if (type === "entry") {
           const temp = useTrackLineStore.getState().trackLine[index];
+          if (temp.type === "station" && temp.homeSection.occupiedBy != -1) {
+            set({
+              alertMessage:
+                "One train already running in the home section can't allow another train to pass",
+            });
+
+            return;
+          }
+          if (
+            temp.type === "station" &&
+            (temp.tracks[trackIndex].entry.occupiedBy != -1 ||
+              temp.tracks[trackIndex].exit.occupiedBy != -1)
+          ) {
+            set({
+              alertMessage:
+                "train is already present in loop track you selected, choose another track to pass the train",
+            });
+            return;
+          }
 
           if (temp.type === "station") {
             if (
@@ -295,7 +319,10 @@ const useTrackLineStore = create<TrackLineState>((set) => ({
 
               set({ trackLine: updateTrackLine });
             } else {
-              console.log("Already one track given to enter");
+              set({
+                alertMessage:
+                  "Already one loop track is selected to pass the train,can't allow to select two loop tracks at a time",
+              });
             }
           }
         }
@@ -310,11 +337,17 @@ const useTrackLineStore = create<TrackLineState>((set) => ({
               (loop) => !loop.exit.occupied,
             );
             if (temp.outerSection.occupiedBy !== -1) {
-              console.log("train running in outer can't allow train ");
+              set({
+                alertMessage:
+                  "One train already running in the outer section of the station can't allow another train to pass",
+              });
               return;
             } else {
               if (count.length === 1 && trackIndex !== countIndex) {
-                console.log("already one train give clerance can.t allow ");
+                set({
+                  alertMessage:
+                    "can't allow two trains to leave station at a time, which may lead to collision",
+                });
               } else {
                 const updateTrackLine = useTrackLineStore
                   .getState()

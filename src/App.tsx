@@ -2,10 +2,15 @@ import Simulator from "./pages/Simulator/Simulator";
 import Navbar from "./components/Layout/Navbar";
 import Sidebar from "./components/Layout/Sidebar";
 import ControlPanel from "./components/ControlPanel";
+import Alerts from "./components/Alerts";
+import useTrackLineStore from "./stores/useTrackLineStore";
 
 function App() {
+  const alertMessage = useTrackLineStore((state) => state.alertMessage);
+  const setAlertMessage = useTrackLineStore((state) => state.setAlertMessage);
+
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="relative flex flex-col h-screen bg-gray-50">
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
@@ -19,6 +24,11 @@ function App() {
           </div>
         </main>
       </div>
+      <Alerts
+        isOpen={Boolean(alertMessage)}
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
     </div>
   );
 }

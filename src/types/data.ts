@@ -41,5 +41,7 @@ export type TrackLineState = {
   runningSections: number[];
   blockedSections: number[];
   cautionSections: number[];
+  alertMessage: string;
+  setAlertMessage: (message: string) => void;
   handleStationSignals: (index: number, type: string, track: number) => void;
 };
