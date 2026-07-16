@@ -11,9 +11,15 @@ const Signal = ({ color }: SignalProps) => {
 
   return (
     <div className="flex h-16 w-10 flex-col items-center justify-center gap-1 rounded-2xl border border-slate-300 bg-slate-900 px-2 py-2 shadow-inner">
-      <div className={`h-3 w-3 rounded-full ${lampMap[color]}`} />
-      <div className="h-3 w-3 rounded-full bg-slate-700" />
-      <div className="h-3 w-3 rounded-full bg-slate-700" />
+      <div
+        className={`h-3 w-3 rounded-full ${color === "red" ? lampMap[color] : "bg-slate-700"}`}
+      />
+      <div
+        className={`h-3 w-3 rounded-full ${color === "green" ? lampMap[color] : "bg-slate-700"}`}
+      />
+      <div
+        className={`h-3 w-3 rounded-full ${color === "yellow" ? lampMap[color] : "bg-slate-700"}`}
+      />
     </div>
   );
 };

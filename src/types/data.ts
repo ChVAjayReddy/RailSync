@@ -1,34 +1,37 @@
 export type SectionType = {
-  type: "section" | "home" | "outer" | "loop";
+  type: "section" | "home" | "outer" | "loop" | "entry" | "exit";
   length: number;
   trainId: number | null;
   occupied: boolean;
   occupiedBy: number;
 };
 export type LoopType = {
-  type: "section" | "home" | "outer" | "loop";
-  length: number;
+  type: "section" | "home" | "outer" | "loop1" | "loop2";
+  length1: number;
   trainId: number | null;
-  occupied: boolean;
-  occupiedBy: number;
-  entry: boolean;
-  exit: boolean;
+  occupied1: boolean;
+  occupiedBy1: number;
+  occupied2: boolean;
+  occupiedBy2: number;
+  length2: number;
 };
+export type loopTrack = { entry: SectionType; exit: SectionType };
 
 export type StationYard = {
   type: "station";
   name: string;
   homeSection: SectionType;
   outerSection: SectionType;
-  tracks: LoopType[];
+  tracks: loopTrack[];
 };
 export type Train = {
   id: number;
-  presentSection: "section" | "home" | "outer" | "loop";
+  presentSection: "section" | "home" | "outer" | "loop" | "entry" | "exit";
   currentSectionId: number;
   nextSectionId: number;
   position: number;
-  track?: number;
+  track: number | null;
+  insideLoop?: number;
 };
 
 export type TrackLineState = {
@@ -38,10 +41,5 @@ export type TrackLineState = {
   runningSections: number[];
   blockedSections: number[];
   cautionSections: number[];
-  handleStationSignals: (
-    track: StationYard,
-    index: number,
-    type: string | number,
-    signal?: string,
-  ) => void;
+  handleStationSignals: (index: number, type: string, track: number) => void;
 };

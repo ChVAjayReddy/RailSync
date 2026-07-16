@@ -18,30 +18,36 @@ const ControlPanel = () => {
           return (
             <div key={`${track.name}-${index}`}>
               <p>Station {track.name}</p>
-              <button
+              {/* <button
                 className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
-                onClick={() =>
-                  handleStationSignals(track, index, track.homeSection.type)
-                }
+                onClick={() => handleStationSignals(index, "home")}
               >
                 {track.homeSection.type}
-              </button>
-              {track.tracks.map((_, trackIndex) => (
+              </button> */}
+              {track.tracks.map((looptrack, trackIndex) => (
                 <div key={`${track.name}-track-${trackIndex}`}>
                   <p>Track {trackIndex}</p>
                   <button
                     onClick={() =>
-                      handleStationSignals(track, index, trackIndex, "entry")
+                      handleStationSignals(index, "entry", trackIndex)
                     }
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                    style={{
+                      backgroundColor: looptrack.entry.occupied
+                        ? "red"
+                        : "green",
+                    }}
                   >
                     entry
                   </button>{" "}
                   <button
                     onClick={() =>
-                      handleStationSignals(track, index, trackIndex, "exit")
+                      handleStationSignals(index, "exit", trackIndex)
                     }
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                    style={{
+                      backgroundColor: looptrack.exit.occupied
+                        ? "red"
+                        : "green",
+                    }}
                   >
                     exit
                   </button>
