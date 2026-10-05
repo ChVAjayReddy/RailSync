@@ -1,6 +1,5 @@
-import { ArrowUpRight, Play, TrainFront } from "lucide-react";
+import { ArrowUpRight, Play } from "lucide-react";
 import useTrackLineStore from "../../stores/useTrackLineStore";
-import { getTrainLocation } from "../../utils/trainLocation";
 
 const ControlPanel = () => {
   const startTrain = useTrackLineStore((state) => state.startTrain);
@@ -8,7 +7,6 @@ const ControlPanel = () => {
     (state) => state.handleStationSignals,
   );
   const trackLine = useTrackLineStore((state) => state.trackLine);
-  const trains = useTrackLineStore((state) => state.trains);
 
   return (
     <div className="operator-content">
