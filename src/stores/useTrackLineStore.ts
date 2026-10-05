@@ -116,7 +116,82 @@ const useTrackLineStore = create<TrackLineState>((set) => ({
     },
     {
       type: "station",
-      name: "A",
+      name: "B",
+      homeSection: {
+        type: "home",
+        length: 4,
+        trainId: null,
+        occupied: true,
+        occupiedBy: -1,
+      },
+      outerSection: {
+        type: "outer",
+        length: 4,
+        trainId: null,
+        occupied: false,
+        occupiedBy: -1,
+      },
+      tracks: [
+        {
+          entry: {
+            type: "entry",
+            length: 4,
+            trainId: null,
+            occupied: true,
+            occupiedBy: -1,
+          },
+          exit: {
+            type: "exit",
+            length: 4,
+            trainId: null,
+            occupied: true,
+            occupiedBy: -1,
+          },
+        },
+        {
+          entry: {
+            type: "entry",
+            length: 4,
+            trainId: null,
+            occupied: true,
+            occupiedBy: -1,
+          },
+          exit: {
+            type: "exit",
+            length: 4,
+            trainId: null,
+            occupied: true,
+            occupiedBy: -1,
+          },
+        },
+        {
+          entry: {
+            type: "entry",
+            length: 4,
+            trainId: null,
+            occupied: true,
+            occupiedBy: -1,
+          },
+          exit: {
+            type: "exit",
+            length: 4,
+            trainId: null,
+            occupied: true,
+            occupiedBy: -1,
+          },
+        },
+      ],
+    },
+    {
+      type: "section",
+      length: 14,
+      trainId: null,
+      occupied: false,
+      occupiedBy: -1,
+    },
+    {
+      type: "station",
+      name: "C",
       homeSection: {
         type: "home",
         length: 4,
@@ -196,18 +271,14 @@ const useTrackLineStore = create<TrackLineState>((set) => ({
       occupied: false,
       occupiedBy: -1,
     },
-    {
-      type: "section",
-      length: 14,
-      trainId: null,
-      occupied: false,
-      occupiedBy: -1,
-    },
   ],
   trains: [],
+  nextTrainId: 1,
   runningSections: [],
   blockedSections: [],
   cautionSections: [],
+  upcomingTrains: {},
+  stationedTrains: {},
   alertMessage: "",
   setAlertMessage: (message: string) => set({ alertMessage: message }),
   startTrain: () => {
@@ -218,17 +289,20 @@ const useTrackLineStore = create<TrackLineState>((set) => ({
           "Train is already running in section can't allow another train to pass",
       });
     } else {
-      const newTrain: Train = {
-        id: Date.now(),
-        currentSectionId: 0,
-        presentSection: "section",
-        nextSectionId: 1,
-        position: -1,
-        track: null,
-      };
-      set((state) => ({
-        trains: [...state.trains, newTrain],
-      }));
+      set((state) => {
+        const newTrain: Train = {
+          id: state.nextTrainId,
+          currentSectionId: 0,
+          presentSection: "section",
+          nextSectionId: 1,
+          position: -1,
+          track: null,
+        };
+        return {
+          trains: [...state.trains, newTrain],
+          nextTrainId: state.nextTrainId + 1,
+        };
+      });
     }
   },
   handleStationSignals: (index: number, type: string, trackIndex: number) => {

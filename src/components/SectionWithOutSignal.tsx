@@ -1,39 +1,50 @@
-type sectionProps = {
+import { LuTrainTrack } from "react-icons/lu";
+import { TrainFront } from "lucide-react";
+
+type SectionProps = {
   length: number;
+
   occupiedBy?: number;
 };
-import { LuTrainTrack } from "react-icons/lu";
-import { IoTrain } from "react-icons/io5";
-const SignalWithOutSignal = ({ length, occupiedBy }: sectionProps) => {
-  const section = [];
-  for (let i = 0; i < length; i++) {
-    if (occupiedBy !== undefined && occupiedBy === i) {
-      section.push(
-        <IoTrain
-          key={i}
-          className="text-sky-600"
-          style={{ rotate: "90deg" }}
-        />,
-      );
-    } else {
-      section.push(
-        <LuTrainTrack
-          key={i}
-          className="text-slate-500"
-          style={{ rotate: "45deg" }}
-        />,
-      );
-    }
-  }
 
+const SignalWithOutSignal = ({
+  length,
+
+  occupiedBy,
+}: SectionProps) => {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white/90 p-3 shadow-sm backdrop-blur">
-      <div className="flex items-center gap-3">
-        <div className="flex flex-wrap items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-2 py-2">
-          {section}
-        </div>
+    <div className="flex flex-col items-start self-end">
+      {/* Track */}
+      <div
+        className="
+          flex
+          items-center
+          gap-0.5
+
+         
+        "
+      >
+        {Array.from({ length }).map((_, index) => (
+          <span className="rail-position" key={index}>
+            <LuTrainTrack
+              color="white"
+              style={{ rotate: "45deg" }}
+            />
+            {occupiedBy === index && (
+              <TrainFront
+                className="attached-train"
+                aria-label="Train on track"
+                strokeWidth={2.4}
+                style={{ rotate: "90deg" }}
+              />
+            )}
+          </span>
+        ))}
+
+        {/* Exit Signal */}
       </div>
     </div>
   );
 };
+
 export default SignalWithOutSignal;

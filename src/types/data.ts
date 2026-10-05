@@ -38,10 +38,13 @@ export type TrackLineState = {
   trackLine: (StationYard | SectionType)[];
   startTrain: () => void;
   trains: Train[];
+  nextTrainId: number;
   runningSections: number[];
   blockedSections: number[];
   cautionSections: number[];
   alertMessage: string;
   setAlertMessage: (message: string) => void;
   handleStationSignals: (index: number, type: string, track: number) => void;
+  upcomingTrains: object;
+  stationedTrains: object;
 };

@@ -252,13 +252,13 @@ const Simulator = () => {
         trackLine: UpdateTrackLIne,
         trains: afterRemovedTrain,
       });
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(intervalId);
   }, []);
 
   return (
-    <div className="flex flex-row gap-4 p-4 flex-wrap">
+    <div className="flex flex-row gap-2 p-4 flex-wrap ">
       {trackLine.map((track, index) => {
         if (track.type === "section")
           return (
